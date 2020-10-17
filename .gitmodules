@@ -1,0 +1,12 @@
+[submodule "discovery"]
+	path = discovery
+	url = https://github.com/sicio87/discovery.git
+[submodule "gateway"]
+	path = gateway
+	url = https://github.com/sicio87/gateway.git
+[submodule "admin-server"]
+	path = admin-server
+	url = https://github.com/sicio87/admin-server.git
+[submodule "todolist"]
+	path = todolist
+	url = https://github.com/sicio87/todolist.git

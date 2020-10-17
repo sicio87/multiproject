@@ -1,3 +1,6 @@
 rootProject.name = 'multiproject'
+include 'admin-server'
 include 'discovery'
+include 'gateway'
+include 'todolist'
 
