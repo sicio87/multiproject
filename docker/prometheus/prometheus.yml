@@ -8,4 +8,4 @@ scrape_configs:
     static_configs:
       - targets:
           - to-do-list-service:10000
-          - gateway-service:8080
+          - gateway-service:8090

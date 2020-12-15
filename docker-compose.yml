@@ -22,6 +22,21 @@ services:
       - my_network
     depends_on:
       - prometheus
+  keycloak:
+    image: jboss/keycloak:latest
+    volumes:
+      - ./docker/keycloak:/opt/jboss/keycloak/imports
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/app-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled"
+    environment:
+      DB_VENDOR: H2
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - my_network
   eureka-discovery-service:
     image: openjdk:11
     volumes:
@@ -45,8 +60,10 @@ services:
     volumes:
       - ./gateway/build/libs:/app
     ports:
-      - "8080:8080"
+      - "8090:8090"
     command: java -jar /app/gateway-0.0.1-SNAPSHOT.jar
+    depends_on:
+      - keycloak
     networks:
       - my_network
   to-do-list-service:
@@ -75,5 +92,4 @@ services:
 
 networks:
   my_network:
-    external:
       name: my_network
