@@ -50,20 +50,24 @@ services:
     image: openjdk:11
     volumes:
       - ./admin-server/build/libs:/app
+      - ./docker/wait-for-it.sh:/wait-for-it.sh
     ports:
       - "9000:9000"
-    command: java -jar /app/admin-server-0.0.1-SNAPSHOT.jar
+    entrypoint: [ "/wait-for-it.sh", "eureka-discovery-service:8761", "--", "java", "-jar", "/app/admin-server-0.0.1-SNAPSHOT.jar" ]
+    depends_on:
+      - eureka-discovery-service
     networks:
       - my_network
   gateway-service:
     image: openjdk:11
     volumes:
       - ./gateway/build/libs:/app
+      - ./docker/wait-for-it.sh:/wait-for-it.sh
     ports:
       - "8090:8090"
-    command: java -jar /app/gateway-0.0.1-SNAPSHOT.jar
+    entrypoint: ["/wait-for-it.sh", "eureka-discovery-service:8761", "--", "java", "-jar", "/app/gateway-0.0.1-SNAPSHOT.jar"]
     depends_on:
-      - keycloak
+      - eureka-discovery-service
     networks:
       - my_network
   to-do-list-service:
@@ -73,7 +77,10 @@ services:
       - ./docker/wait-for-it.sh:/wait-for-it.sh
     ports:
       - "10000:10000"
-    entrypoint: ["/wait-for-it.sh", "db:3306", "--", "java", "-jar", "/app/todolist-0.0.1-SNAPSHOT.jar"]
+    entrypoint: ["/wait-for-it.sh", "db:3306", "eureka-discovery-service:8761", "--", "java", "-jar", "/app/todolist-0.0.1-SNAPSHOT.jar"]
+    depends_on:
+      - db
+      - eureka-discovery-service
     networks:
       - my_network
   db:
